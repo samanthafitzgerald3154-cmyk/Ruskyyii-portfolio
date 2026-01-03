@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rusk | Artist Alley Portfolio 2026</title>
+    <!-- Frameworks & Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Lora:italic@1&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #fdfcf8; 
+            color: #4a453e; 
+            scroll-behavior: smooth; 
+            overflow-x: hidden; 
+        }
+        .font-serif { font-family: 'Lora', serif; }
+        
+        /* Premium Paper Texture Overlay */
+        .paper-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; opacity: 0.04; z-index: 100;
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+        }
+
+        /* Large Scale Carousel with Floating Effect */
+        .main-carousel .carousel-cell {
+            width: 100%; 
+            height: 85vh; 
+            margin-right: 20px;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 8rem;
+        }
+        
+        .floating-art {
+            animation: float 6s ease-in-out infinite;
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(1deg); }
+        }
+
+        /* Flickity Custom Styles */
+        .flickity-page-dots { bottom: 20px; }
+        .flickity-page-dots .dot { background: #d1d5db; opacity: 1; }
+        .flickity-page-dots .dot.is-selected { background: #f87171; }
+        
+        /* Mockup Walls */
+        .mockup-wall {
+            background-color: #f1f5f9;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .poster-item {
+            @apply bg-white border border-slate-200 shadow-md rounded-sm flex items-center justify-center overflow-hidden;
+            aspect-ratio: 1 / 1.41;
+            height: 100px;
+        }
+
+        .poster-item-horizontal {
+            @apply bg-white border border-slate-200 shadow-md rounded-sm flex items-center justify-center overflow-hidden;
+            aspect-ratio: 1.41 / 1;
+            height: 75px;
+        }
+
+        /* Blueprint Table Styles */
+        .blueprint-bg {
+            background-color: #ffffff;
+            background-image: linear-gradient(#f1f5f9 1px, transparent 1px), linear-gradient(90deg, #f1f5f9 1px, transparent 1px);
+            background-size: 20px 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .blueprint-table {
+            width: 420px; 
+            height: 220px; 
+            background: white;
+            border: 3px solid #1e293b;
+            position: relative;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        .blueprint-sticker-box {
+            @apply bg-slate-50 border-2 border-slate-800 rounded flex flex-col items-center justify-center;
+            width: 100px;
+            height: 60px;
+        }
+
+        .blueprint-label-dark {
+            @apply text-[10px] font-black uppercase text-slate-900 tracking-widest;
+        }
+
+        /* Scribble Stars Animation */
+        .scribble-star {
+            position: absolute;
+            z-index: 5;
+            pointer-events: none;
+            filter: url(#crayon);
+            animation: starPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes starPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+            50% { transform: scale(1.2) rotate(15deg); opacity: 0.8; }
+        }
+
+        .crayon-filter { filter: url(#crayon); }
+
+        /* Toggle States */
+        .setup-view { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .view-hidden { opacity: 0; transform: scale(0.95); pointer-events: none; position: absolute; top: 0; left: 0; width: 100%; }
+        .view-active { opacity: 1; transform: scale(1); position: relative; }
+
+        /* Artist cutout look */
+        .artist-cutout {
+            width: 320px; 
+            height: 320px;
+            object-fit: cover;
+            object-position: top;
+            clip-path: ellipse(50% 50% at 50% 50%);
+            border-bottom: 0;
+            z-index: 25;
+        }
+
+        .blueprint-artist-circle {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border: 3px solid #1e293b;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        /* Sewing Stitch Border Effect */
+        .sewing-border {
+            border: 2px dashed #f472b6;
+            outline: 2px solid #fee2e2;
+            outline-offset: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="paper-overlay"></div>
+
+    <svg class="hidden">
+        <defs>
+            <filter id="crayon">
+                <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-[#fdfcf8]/90 backdrop-blur-sm border-b-2 border-dashed border-[#e5e7eb] px-6 py-5">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 bg-white rounded-full border-2 border-[#f87171] overflow-hidden shadow-[3px_3px_0px_#fee2e2]">
+                    <img src="https://i.postimg.cc/t17ZNhKw/50bdf7f1.png" class="w-full h-full object-cover" alt="Rusk">
+                </div>
+                <span class="text-xl font-black uppercase tracking-tight text-slate-900">Rusk</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-[10px] font-black uppercase tracking-widest">
+                <a href="#art" class="hover:text-[#60a5fa] transition-colors">Art Gallery</a>
+                <a href="#fandoms" class="hover:text-[#f87171] transition-colors">Fandoms</a>
+                <a href="#merch" class="hover:text-[#f472b6] transition-colors">Merch List</a>
+                <a href="#setup" class="hover:text-[#fbbf24] transition-colors">Table Setup</a>
+                <div class="flex items-center gap-4 border-l border-slate-200 pl-8">
+                    <a href="https://x.com/Ruskkyiii" target="_blank" class="hover:text-[#60a5fa] text-base"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/ruskyyii_/" target="_blank" class="hover:text-[#f472b6] text-base"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <header class="relative pt-48 pb-12 px-6 text-center">
+        <div class="max-w-4xl mx-auto">
+            <span class="inline-block px-4 py-1 rounded-full bg-slate-100 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-6">Artist Alley Portfolio</span>
+            <h1 class="text-6xl md:text-8xl font-black text-[#2d2a26] mb-6 tracking-tighter leading-none">
+                Rusk <br> <span class="text-[#f87171] font-serif italic crayon-filter">Studio</span>
+            </h1>
+            <p class="text-lg text-slate-500 max-w-xl mx-auto font-medium">Digital Illustrator specializing in textured fan-art and convention merchandise.</p>
+        </div>
+    </header>
+
+    <!-- Fandom Section -->
+    <section id="fandoms" class="py-12 px-6 border-y border-slate-100 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-wrap justify-center gap-3">
+                <div class="px-5 py-2 border-2 border-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500">Pokémon</div>
+                <div class="px-5 py-2 border-2 border-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500">Nintendo</div>
+                <div class="px-5 py-2 border-2 border-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500">Tamagotchi</div>
+                <div class="px-5 py-2 border-2 border-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500">Madoka Magica</div>
+                <div class="px-5 py-2 border-2 border-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-500">Stranger Things</div>
+                <div class="px-5 py-2 border-2 border-slate-100 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-200 italic">& Other Media</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section (Rotating Wheel) -->
+    <section id="art" class="py-16 bg-white overflow-hidden relative">
+        <div class="scribble-star top-10 left-[5%]"><i class="fa-solid fa-star text-[#fbbf24] text-5xl"></i></div>
+        <div class="scribble-star top-[40%] left-[2%]"><i class="fa-solid fa-star text-[#60a5fa] text-3xl"></i></div>
+        <div class="scribble-star bottom-10 left-[15%]"><i class="fa-solid fa-star text-[#60a5fa] text-4xl"></i></div>
+        <div class="scribble-star top-1/2 right-[10%]"><i class="fa-solid fa-star text-[#f87171] text-3xl"></i></div>
+        <div class="scribble-star bottom-[10%] right-[5%]"><i class="fa-solid fa-star text-[#f472b6] text-4xl"></i></div>
+
+        <div class="max-w-6xl mx-auto px-6 mb-12 text-center">
+             <h2 class="text-4xl font-black text-[#2d2a26] uppercase tracking-tighter">Examples of <span class="text-[#60a5fa] font-serif italic">my Work</span></h2>
+        </div>
+
+        <div class="w-full">
+            <div class="main-carousel">
+                <div class="carousel-cell"><img src="https://i.postimg.cc/RhmsTdGj/IMG-0832.png " class="floating-art"></div>
+                <div class="carousel-cell"><img src="https://i.postimg.cc/m253LVCZ/IMG-0885.png" class="floating-art"></div>
+                <div class="carousel-cell"><img src="https://i.postimg.cc/0QyrJ11B/IMG-0892.png" class="floating-art"></div>
+                <div class="carousel-cell"><img src="https://i.postimg.cc/mDKzxpKj/IMG-0883.png" class="floating-art"></div>
+                <div class="carousel-cell"><img src="https://i.postimg.cc/7Y3CcVXv/IMG-0820.png" class="floating-art"></div>
+                <div class="carousel-cell"><img src="https://i.postimg.cc/zfc3WPD8/IMG-0891.png" class="floating-art"></div>
+                <div class="carousel-cell"><img src="https://i.postimg.cc/C5DZwHV3/IMG-0889.png"class="floating-art"></div>
+                <div class="carousel-cell"><img src="https://i.postimg.cc/XvHBLYLq/IMG-0888.png" class="floating-art"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-12 bg-[#fdfcf8] border-b border-slate-100">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h3 class="text-2xl font-black text-slate-900 mb-4 uppercase tracking-tighter">Get to know the Artist</h3>
+            <p class="text-sm text-slate-600 font-medium leading-relaxed italic">
+                Hi, I'm Rusk!, a 20 year old digital illustrator with a love for  textures and creating cozy artworks for fandom communities. I specialize in merging traditional feel with digital to create unique merch and a style which feels warm and cutesy.
+            </p>
+        </div>
+    </section>
+
+    <!-- Merch Section -->
+    <section id="merch" class="py-24 px-6 bg-[#fdfcf8] border-t border-slate-100">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col lg:flex-row gap-20 items-center">
+                <div class="w-full lg:w-1/2">
+                    <h2 class="text-4xl font-black text-[#2d2a26] mb-8 leading-tight uppercase tracking-tighter">Physical <br><span class="text-[#f472b6] font-serif italic crayon-filter">Product Line</span></h2>
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="flex items-center gap-6 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <div class="w-14 h-14 bg-[#fee2e2] rounded-2xl flex items-center justify-center text-[#f87171] flex-shrink-0 text-2xl"><i class="fa-solid fa-star"></i></div>
+                            <div>
+                                <h3 class="font-black uppercase text-sm tracking-tight">Acrylic Charms</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Glitter finish, double-sided, 3mm thick.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <div class="w-14 h-14 bg-[#e0f2fe] rounded-2xl flex items-center justify-center text-[#60a5fa] flex-shrink-0 text-2xl"><i class="fa-solid fa-droplet"></i></div>
+                            <div>
+                                <h3 class="font-black uppercase text-sm tracking-tight">Weatherproof Stickers</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Matte vinyl, scratch-resistant die-cuts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full lg:w-1/2">
+                    <div class="merch-carousel">
+                        <div class="carousel-cell !w-full !h-[450px] !bg-white !shadow-none !border-2 rounded-[3.5rem] overflow-hidden">
+                             <img src="https://i.postimg.cc/QMw1sMTw/A8e80b576f5f041cfb2a7ee26cfd24637R-(1).avif" alt="Merch 1" class="object-contain w-full h-full p-8">
+                        </div>
+                        <div class="carousel-cell !w-full !h-[450px] !bg-white !shadow-none !border-2 rounded-[3.5rem] overflow-hidden">
+                             <img src="https://i.postimg.cc/k5zK95b8/Ab929d398b2a3474aace8446e56bcabf5t-(1).avif" alt="Merch 2" class="object-contain w-full h-full p-8">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Table Setup -->
+    <section id="setup" class="py-24 px-6 bg-white border-t-2 border-dashed border-slate-200 relative">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
+            <div class="w-full md:w-3/5">
+                <div class="flex gap-4 mb-8 justify-center">
+                    <button onclick="switchView('front')" id="tab-front" class="text-[10px] font-black uppercase tracking-widest border-b-2 border-slate-900 pb-1">Front elevation</button>
+                    <button onclick="switchView('top')" id="tab-top" class="text-[10px] font-black uppercase tracking-widest text-slate-900/40 hover:text-slate-900 pb-1">Floor plan</button>
+                </div>
+
+                <div class="relative overflow-hidden min-h-[750px]">
+                    <!-- FRONT VIEW -->
+                    <div id="view-front" class="setup-view view-active">
+                        <div class="mockup-wall rounded-[3.5rem] p-6 border border-slate-200 min-h-[700px] flex flex-col items-center relative overflow-y-auto">
+                            <div class="relative z-10 flex flex-col items-center">
+                                <div class="grid grid-cols-4 gap-3 mb-3">
+                                    <div class="poster-item"><img src="https://i.postimg.cc/Z0NTF9XK/IMG-0832.png" class="w-full h-full object-cover"></div>
+                                    <div class="poster-item"><img src="https://i.postimg.cc/vgJGwMgS/IMG-0885.png" class="w-full h-full object-cover"></div>
+                                    <div class="poster-item"><img src="https://i.postimg.cc/YG5tBkLL/IMG-0883.png" class="w-full h-full object-cover"></div>
+                                    <div class="poster-item"><img src="https://i.postimg.cc/KK4bK4nS/IMG-0891.png" class="w-full h-full object-cover"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 mb-3">
+                                    <div class="poster-item-horizontal"><img src="https://i.postimg.cc/BjmsQ2Pr/IMG-0820.png" class="w-full h-full object-cover"></div>
+                                    <div class="poster-item-horizontal"><img src="https://i.postimg.cc/sMmfQtq7/IMG-0892.png" class="w-full h-full object-cover"></div>
+                                    <div class="poster-item-horizontal"><img src="https://i.postimg.cc/Z0NTF9XK/IMG-0832.png" class="w-full h-full object-cover"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 mb-3">
+                                    <div class="poster-item-horizontal"><img src="https://i.postimg.cc/YG5tBkLL/IMG-0883.png" class="w-full h-full object-cover"></div>
+                                    <div class="poster-item-horizontal"><img src="https://i.postimg.cc/fV8ZTY0s/IMG-0889.png" class="w-full h-full object-cover"></div>
+                                    <div class="poster-item-horizontal"><img src="https://i.postimg.cc/vgJGwMgS/IMG-0885.png" class="w-full h-full object-cover"></div>
+                                </div>
+                            </div>
+                            <div class="w-full h-32 absolute bottom-0 flex flex-col items-center pointer-events-none">
+                                <img src="https://i.postimg.cc/sQv2Rwn4/Untitled-Artwork.png" 
+                                     class="artist-cutout absolute bottom-12 scale-[1.75] transform transition-transform z-20 pointer-events-auto" 
+                                     alt="Rusk at Table">
+                                <div class="w-full h-full border-x-2 border-t-2 border-slate-900 bg-white flex items-center justify-center relative z-40 pointer-events-auto">
+                                    <span class="text-[8px] font-black uppercase tracking-widest text-slate-900">Ruskyyii Studio • Table Setup</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOP VIEW (FLOOR PLAN) -->
+                    <div id="view-top" class="setup-view view-hidden">
+                        <div class="blueprint-bg rounded-[3.5rem] p-12 min-h-[700px] flex flex-col items-center justify-center relative">
+                            <div class="blueprint-artist-circle mb-4 border-slate-900">
+                                <img src="https://i.postimg.cc/t17ZNhKw/50bdf7f1.png" class="w-full h-full object-cover" alt="Rusk Logo">
+                            </div>
+                            <span class="blueprint-label-dark mb-8">Artist Position</span>
+                            
+                            <div class="blueprint-table p-8 border-slate-900">
+                                <div class="flex justify-between items-start h-full">
+                                    <div class="flex flex-col items-start gap-3">
+                                        <div class="w-16 h-10 border-2 border-slate-900 flex items-center justify-center bg-slate-50">
+                                            <span class="text-[7px] uppercase font-black">Business<br>Cards</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center gap-3">
+                                            <div class="blueprint-sticker-box !w-24 !h-14 border-slate-900">
+                                                <span class="text-[9px] font-black uppercase text-slate-900">Pins</span>
+                                            </div>
+                                            <div class="w-14 h-14 border-2 border-[#a855f7] rounded-full flex items-center justify-center relative bg-white shadow-[0_0_10px_rgba(168,85,247,0.2)]">
+                                                <div class="w-10 h-10 border border-[#a855f7] border-dashed rounded-full animate-spin-slow"></div>
+                                                <span class="absolute text-[5px] font-black uppercase text-center leading-[1.1] text-[#a855f7]">Keychains<br>Spin</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="w-20 h-12 border-2 border-dashed border-slate-400 flex items-center justify-center mt-2">
+                                            <span class="text-[6px] text-slate-400 font-bold uppercase">Space for<br>Checkout</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-col gap-3 items-end">
+                                        <div class="blueprint-sticker-box border-slate-900">
+                                            <span class="text-[9px] font-black uppercase text-slate-900">Sticker Box A</span>
+                                        </div>
+                                        <div class="blueprint-sticker-box border-slate-900">
+                                            <span class="text-[9px] font-black uppercase text-slate-900">Mini Prints</span>
+                                        </div>
+                                        <div class="blueprint-sticker-box border-slate-900 !h-14">
+                                            <span class="text-[8px] font-black uppercase text-slate-900">Charm Bin</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-12 blueprint-label-dark border-t border-slate-900 pt-4 px-12 text-center">Convention Aisle / Audience Area</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full md:w-2/5 space-y-6">
+                <h2 class="text-4xl font-black text-[#2d2a26] leading-tight uppercase tracking-tighter">Booth <br><span class="text-[#fbbf24] font-serif italic crayon-filter">Layout</span></h2>
+                <div class="p-6 bg-white border border-slate-200 rounded-2xl shadow-sm space-y-4">
+                    <div>
+                        <h4 class="font-black text-[10px] uppercase tracking-widest text-slate-900 mb-2">Display Architecture</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">My booth uses a vertical grid system to maximize visibility. Large A3 prints form the upper tier, while two rows of horizontal landscape variants create a dense, colorful mid-level focal point.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-[10px] uppercase tracking-widest text-[#f87171] mb-2">Customer Engagement</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium">Layout is designed for flow. The keychain spinner is placed centrally near the pins to encourage tactile interaction, allowing customers to browse small goods without blocking access to prints.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="py-24 px-6 bg-white text-center border-t border-slate-100">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-4xl font-black text-[#2d2a26] mb-10 uppercase tracking-tighter">Contact</h2>
+            <div class="inline-block p-10 bg-[#fffcf0] rounded-[3rem] border-4 border-[#fbbf24] shadow-[10px_10px_0px_#fef3c7] mb-12 text-left space-y-8 outline outline-4 outline-[#fee2e2] outline-offset-4 sewing-border">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 flex items-center justify-center bg-white rounded-full border-2 border-slate-200 flex-shrink-0">
+                        <i class="fa-solid fa-envelope text-[#f87171]"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 block mb-1">Email</span>
+                        <p class="text-xl md:text-2xl font-black text-[#f87171] select-all leading-tight">retrorusk@gmail.com</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 flex items-center justify-center bg-white rounded-full border-2 border-slate-200 flex-shrink-0">
+                        <i class="fa-brands fa-x-twitter text-slate-700"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 block mb-1">X (Twitter)</span>
+                        <a href="https://x.com/Ruskkyiii" target="_blank" class="text-xl md:text-2xl font-black text-slate-700 hover:text-[#f87171] transition-colors leading-tight">@Ruskkyiii</a>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 flex items-center justify-center bg-white rounded-full border-2 border-slate-200 flex-shrink-0">
+                        <i class="fa-brands fa-instagram text-[#f472b6]"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 block mb-1">Instagram</span>
+                        <a href="https://www.instagram.com/ruskyyii_/" target="_blank" class="text-xl md:text-2xl font-black text-slate-700 hover:text-[#f87171] transition-colors leading-tight">@ruskyyii_</a>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.5em]">© 2026 RUSK STUDIO</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+    <script>
+        function switchView(view) {
+            const front = document.getElementById('view-front');
+            const top = document.getElementById('view-top');
+            const tabFront = document.getElementById('tab-front');
+            const tabTop = document.getElementById('tab-top');
+            if(view === 'front') {
+                front.classList.remove('view-hidden'); front.classList.add('view-active');
+                top.classList.add('view-hidden'); top.classList.remove('view-active');
+                tabFront.className = "text-[10px] font-black uppercase tracking-widest border-b-2 border-slate-900 pb-1 text-slate-900";
+                tabTop.className = "text-[10px] font-black uppercase tracking-widest text-slate-900/40 hover:text-slate-900 pb-1";
+            } else {
+                top.classList.remove('view-hidden'); top.classList.add('view-active');
+                front.classList.add('view-hidden'); front.classList.remove('view-active');
+                tabTop.className = "text-[10px] font-black uppercase tracking-widest border-b-2 border-slate-900 pb-1 text-slate-900";
+                tabFront.className = "text-[10px] font-black uppercase tracking-widest text-slate-900/40 hover:text-slate-900 pb-1";
+            }
+        }
+        window.onload = function() {
+            var mainElem = document.querySelector('.main-carousel');
+            if(mainElem) new Flickity(mainElem, { cellAlign: 'center', contain: true, wrapAround: true, autoPlay: 4000, pageDots: true });
+            var merchElem = document.querySelector('.merch-carousel');
+            if(merchElem) new Flickity(merchElem, { cellAlign: 'center', wrapAround: true, pageDots: true, prevNextButtons: false });
+        };
+    </script>
+    <style>
+        .animate-spin-slow { animation: spin 15s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+</body>
+</html>
